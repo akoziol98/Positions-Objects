@@ -1,7 +1,7 @@
 import pandas as pd
 from matplotlib import pyplot as plt
-from plotting.plot_data import make_boxplots_interaction, make_boxplots_interaction_count
-from imports.import_data import extract_sampling_across_positions, extract_sampling_per_id, generateBodyDescriptives, \
+from Python.positions_objects.plotting.plot_data import make_boxplots_interaction, make_boxplots_interaction_count
+from Python.positions_objects.imports.import_data import extract_sampling_across_positions, extract_sampling_per_id, generateBodyDescriptives, \
     generateManualDescriptives
 
 timepoint = 'T3'
