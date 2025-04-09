@@ -43,7 +43,7 @@ def assign_task_bin(row, times, bins, ini_threshold=0):
         return '5+'
 
     return 'Undefined'  # If no bin matches
-def generateBodyDescriptives(timepoint):
+def generateBodyDescriptives(IN_DIR, OUT_DIR, timepoint):
     """
        Extracts and processes body movement annotation data from ELAN (.eaf) files,
        compiling them into a structured dataset.
@@ -56,7 +56,7 @@ def generateBodyDescriptives(timepoint):
                      sorted by ID and start time, and saved as a CSV file.
     """
     data_pos = {}
-    for file in glob.glob('./data/' + timepoint + '/body/*/*.eaf'):
+    for file in glob.glob(IN_DIR + timepoint + '/body/*/*.eaf'):
         elan_file = pympi.Elan.Eaf(file)
         filename = os.path.basename(file)[:7]
         df_pos = pd.DataFrame(columns=['StartTime', 'EndTime', 'Duration', 'Tier'])
@@ -74,10 +74,10 @@ def generateBodyDescriptives(timepoint):
 
     body = pd.concat(data_pos.values(), ignore_index=True)
     body = body.sort_values(['id', 'StartTime']).reset_index(drop=True)
-    body.to_csv('./data/' + timepoint + '/body.csv')
+    body.to_csv(OUT_DIR + timepoint + '/body.csv')
     return body
 
-def generateManualDescriptives(timepoint):
+def generateManualDescriptives(IN_DIR, OUT_DIR, timepoint):
     """
         Extracts and processes manual annotation data from ELAN (.eaf) files,
         focusing on specific tiers related to object handling.
@@ -91,7 +91,7 @@ def generateManualDescriptives(timepoint):
     """
     data_manual = {}
     tiers_analysis = ['inhand_right_child', 'inhand_left_child']
-    for file in glob.glob('./data/' + timepoint + '/manual/*/*.eaf'):
+    for file in glob.glob(IN_DIR + timepoint + '/manual/*/*.eaf'):
 
         elan_file = pympi.Elan.Eaf(file)
         filename = os.path.basename(file)[:7]
@@ -108,7 +108,7 @@ def generateManualDescriptives(timepoint):
     manual = pd.concat(data_manual.values(), ignore_index=True)
 
     manual = manual.sort_values(['id', 'StartTime'])
-    manual.to_csv('./data/' + timepoint + '/manual.csv')
+    manual.to_csv(OUT_DIR + timepoint + '/manual.csv')
     return manual
 
 def check_sitting(row, participant_data_bod):
@@ -202,11 +202,11 @@ def calculate_sampling_across_positions(manual,
 
     return sampling_across_positions.reset_index(drop=True)
 
-def extract_sampling_across_positions(timepoint, body_or=None, manual_or=None):
+def extract_sampling_across_positions(IN_DIR, OUT_DIR, timepoint, body_or=None, manual_or=None):
     if manual_or is None:
-        manual_or = pd.read_csv('./data/' + timepoint + '/manual.csv', index_col=0)
+        manual_or = pd.read_csv(IN_DIR + timepoint + '/manual.csv', index_col=0)
     if body_or is None:
-        body_or = pd.read_csv('./data/' + timepoint + '/body.csv', index_col=0)
+        body_or = pd.read_csv(IN_DIR + timepoint + '/body.csv', index_col=0)
 
     manual = manual_or.copy()
     body = body_or.copy()
@@ -237,13 +237,13 @@ def extract_sampling_across_positions(timepoint, body_or=None, manual_or=None):
 
     sampling_across_positions['Affordances'] = sampling_across_positions['Label'].replace(map_toys)
     sampling_across_positions['Condition'] = sampling_across_positions['Position'].apply(lambda x: 'Independent sitting' if x=='Sitting' else 'Other')
-    sampling_across_positions.to_csv('./data/' + timepoint + '/sampling_across_positions.csv')
+    sampling_across_positions.to_csv(OUT_DIR + timepoint + '/sampling_across_positions.csv')
 
-    print(f'File saved successfully inside /data/{timepoint}/')
+    print(f'File saved successfully inside {OUT_DIR}/data/{timepoint}/')
     return sampling_across_positions
 
-def extract_sampling_per_id(sampling_across_positions, timepoint):
-    length = pd.read_excel('./data/' + timepoint + '/length.xlsx')[['id', 'video_length']]
+def extract_sampling_per_id(IN_DIR, OUT_DIR, sampling_across_positions, timepoint):
+    length = pd.read_excel(IN_DIR + timepoint + '/length.xlsx')[['id', 'video_length']]
 
     all_combinations = pd.MultiIndex.from_product(
         [sampling_across_positions['id'].unique(),
@@ -261,8 +261,8 @@ def extract_sampling_per_id(sampling_across_positions, timepoint):
     grouped = grouped.merge(length, on='id', how='left')
     grouped['count_per_min'] = grouped['count'] / (grouped['video_length'] / 60000)
     grouped['time_s_per_min'] = (grouped['sum']) / (grouped['video_length'] / 60000).fillna(0) # time in seconds spent sampling in the specific position per minute
-    grouped.to_csv('./data/' + timepoint + '/sampling_across_positions_counts.csv')
-    grouped[grouped['count'] > 0].to_csv('./data/' + timepoint + '/art_anova_count.csv')
+    grouped.to_csv(OUT_DIR + timepoint + '/sampling_across_positions_counts.csv')
+    grouped[grouped['count'] > 0].to_csv(OUT_DIT + timepoint + '/art_anova_count.csv')
 
     print(f'File saved successfully inside /data/{timepoint}/')
     return grouped

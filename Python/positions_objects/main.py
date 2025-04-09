@@ -1,11 +1,14 @@
 import pandas as pd
 from matplotlib import pyplot as plt
-from Python.positions_objects.plotting.plot_data import make_boxplots_interaction, make_boxplots_interaction_count
-from Python.positions_objects.imports.import_data import extract_sampling_across_positions, extract_sampling_per_id, generateBodyDescriptives, \
+from positions_objects.plotting.plot_data import make_boxplots_interaction, make_boxplots_interaction_count
+from positions_objects.imports.import_data import extract_sampling_across_positions, extract_sampling_per_id, generateBodyDescriptives, \
     generateManualDescriptives
 
 timepoint = 'T3'
 extract_data = 1
+IN_DIR = 'G:\Mój dysk\POSITION_TOY_9MO\SCRIPTS\clean_code\data'
+OUT_DIR = 'G:\Mój dysk\POSITION_TOY_9MO\SCRIPTS\clean_code\data'
+
 if extract_data:
     body = generateBodyDescriptives(timepoint)
     manual = generateManualDescriptives(timepoint)
@@ -14,8 +17,8 @@ if extract_data:
 
 # Load data
 else:
-    sampling_across_positions = pd.read_csv('data/' + timepoint + '/sampling_across_positions.csv', index_col=0)
-    sampling_per_id = pd.read_csv('data/' + timepoint + '/sampling_across_positions_counts.csv', index_col=0)
+    sampling_across_positions = pd.read_csv(IN_DIR + timepoint + '/sampling_across_positions.csv', index_col=0)
+    sampling_per_id = pd.read_csv(IN_DIR + timepoint + '/sampling_across_positions_counts.csv', index_col=0)
 
 sampling_across_positions = sampling_across_positions[sampling_across_positions['Tier'] != 'mouthing'].reset_index(drop=True)
 sampling_per_id = sampling_per_id[sampling_per_id['count'] > 0].reset_index(drop=True)
