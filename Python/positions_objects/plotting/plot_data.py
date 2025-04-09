@@ -155,7 +155,7 @@ def make_boxplots_interaction(df_sit, df_non, y_var, toys, colors, toy_images, f
     plt.tight_layout()
 
     if save_name:
-        plt.savefig(f"plots/{save_name}", dpi=900)
+        plt.savefig(f"{save_name}", dpi=900)
         print("Plot saved successfully")
 
     plt.show()
@@ -277,7 +277,7 @@ def make_boxplots_interaction_count(df_sit, df_non, y_var, toys, colors, toy_ima
         ax.set_xlabel('')
 
     ax1.set_yticklabels([str(int(ytick)) if ytick % 5 == 0 else ytick for ytick in ax1.get_yticks()[1:]])
-    ax1.set_ylabel('Rate of the manual sampling across infants [count/min]', fontsize=22)
+    ax1.set_ylabel('Frequency of the manual sampling across infants [count/min]', fontsize=22)
     ax2.spines['left'].set_visible(False)
     ax2.get_yaxis().set_visible(False)
     plt.tight_layout()
@@ -286,7 +286,7 @@ def make_boxplots_interaction_count(df_sit, df_non, y_var, toys, colors, toy_ima
     sns.despine(trim=True)
 
     if save_name:
-        plt.savefig(f"plots/{save_name}", dpi=900)
+        plt.savefig(f"{save_name}", dpi=900)
         print("Plot saved successfully")
 
     plt.show()
