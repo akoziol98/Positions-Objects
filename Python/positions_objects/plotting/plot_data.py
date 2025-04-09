@@ -78,39 +78,27 @@ def make_boxplots_interaction(df_sit, df_non, y_var, toys, colors, toy_images, f
         counts = df_non['Affordances'].value_counts()[label]
         ax2.text(x_pos, df_non[y_var].min() - 1.8, f'c = {counts}', ha='center', va='bottom')
 
-    #Add image icons below x-axis
-    if len(toy_images.keys()) == 4:
-        bubbles_img = toy_images['bubbles_img']
-        dino_img = toy_images['dino_img']
-        klickity_img = toy_images['klickity_img']
-        spinner_img = toy_images['spinner_img']
+        # Add image icons below x-axis
+        if len(toy_images.keys()) == 2:
+            bubbles_img = toy_images['graspable']['bubbles_img']
+            dino_img = toy_images['graspable']['dino_img']
+            klickity_img = toy_images['stationary']['klickity_img']
+            spinner_img = toy_images['stationary']['spinner_img']
 
-        for ax in [ax1, ax2]:
-            image_positions = [0.1245, 0.3745, 0.6245, 0.8745]  # Adjusted positions
-            images = [bubbles_img, dino_img, klickity_img, spinner_img]
-            for xpos, img in zip(image_positions, images):
-                newax = plt.gca().inset_axes([xpos - 0.05, -0.14, 0.1, 0.1])
-                newax.imshow(img)
-                newax.axis('off')
-
-    if len(toy_images.keys()) == 2:
-        bubbles_img = toy_images['graspable']['bubbles_img']
-        dino_img = toy_images['graspable']['dino_img']
-        klickity_img = toy_images['stationary']['klickity_img']
-        spinner_img = toy_images['stationary']['spinner_img']
-
-        for ax in [ax1, ax2]:
-            image_positions = [0.1, 0.26, 0.64, 0.8]  # Adjusted positions
-            images = [bubbles_img, dino_img, klickity_img, spinner_img]
-            for xpos, img in zip(image_positions, images):
-                newax = plt.gca().inset_axes([xpos, -0.17, 0.1, 0.1],transform=ax.transAxes)
-                newax.imshow(img)
-                newax.axis('off')
+            for ax in [ax1, ax2]:
+                image_positions = [0.1, 0.26, 0.64, 0.8]  # Adjusted positions
+                images = [bubbles_img, dino_img, klickity_img, spinner_img]
+                for xpos, img in zip(image_positions, images):
+                    newax = plt.gca().inset_axes([xpos, -0.17, 0.1, 0.1], transform=ax.transAxes)
+                    newax.imshow(img)
+                    newax.axis('off')
 
     # Add significance lines
     for xyA, xyB in [
+                     #[(0, 20.5), (1, 20.5)],
                      [(0, 19), (0, 19)],
                      [(1, 16), (1, 16)],
+                     #[(1, 14.5), (0, 14.5)],
                      ]:
         con = ConnectionPatch(xyA=xyA, coordsA=ax1.transData,
                               xyB=xyB, coordsB=ax2.transData,
@@ -138,21 +126,25 @@ def make_boxplots_interaction(df_sit, df_non, y_var, toys, colors, toy_images, f
     ax2.axvline(x=0, ymin=0.92, ymax=0.95, color='black', linewidth=1)
 
     ax1.text(1, 19, '***', ha='center', va='bottom')
+    # plt.annotate("***", [0.5, 20.5], ha='center', va='bottom')
+    # plt.annotate("***", [0.5, 14.5], ha='center', va='bottom')
 
-    sns.despine(trim=True)
-    plt.xlabel('')
     for ax in [ax1, ax2]:
         ax.set_facecolor("white")
         ax.set_ylabel('')
         ax.set_xlabel('')
-
+    plt.ylim([0, 20])
     ax1.set_yticklabels([str(int(ytick)) if ytick % 5 == 0 else ytick for ytick in ax1.get_yticks()[:]])
     ax1.set_ylabel('Duration of a manual sampling episode [s]', fontsize=22)
+    sns.despine(trim=True)
+    ax1.spines['right'].set_visible(False)
     ax2.spines['left'].set_visible(False)
     ax2.get_yaxis().set_visible(False)
-    plt.ylim([0, 20])
-    plt.subplots_adjust(wspace=0.05)
+    #
     plt.tight_layout()
+    plt.xlabel('')
+    plt.subplots_adjust(wspace=0.05)
+
 
     if save_name:
         plt.savefig(f"{save_name}", dpi=900)
@@ -246,7 +238,8 @@ def make_boxplots_interaction_count(df_sit, df_non, y_var, toys, colors, toy_ima
 
     # Add significance lines
     for xyA, xyB in [[(0.5, 31.2), (0.5, 31.2)],
-                     [(0.5, 26.1), (0.5, 26.1)],]:
+                     [(0.5, 26.1), (0.5, 26.1)],
+                     ]:
 
         con = ConnectionPatch(xyA=xyA, coordsA=ax1.transData,
                               xyB=xyB, coordsB=ax2.transData,
@@ -278,12 +271,15 @@ def make_boxplots_interaction_count(df_sit, df_non, y_var, toys, colors, toy_ima
 
     ax1.set_yticklabels([str(int(ytick)) if ytick % 5 == 0 else ytick for ytick in ax1.get_yticks()[1:]])
     ax1.set_ylabel('Frequency of the manual sampling across infants [count/min]', fontsize=22)
+    sns.despine(trim=True)
+    ax1.spines['right'].set_visible(False)
     ax2.spines['left'].set_visible(False)
     ax2.get_yaxis().set_visible(False)
     plt.tight_layout()
     plt.xlabel('')
+    line = plt.Line2D((0,0), (0,0), color="w", linewidth=3)
+    fig.add_artist(line)
     plt.subplots_adjust(wspace=0.05)
-    sns.despine(trim=True)
 
     if save_name:
         plt.savefig(f"{save_name}", dpi=900)
