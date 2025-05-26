@@ -5,7 +5,7 @@ from imports.import_data import extract_sampling_across_positions, extract_sampl
     generateManualDescriptives
 
 timepoint = 'T3'
-extract_data = 0
+extract_data = 1
 DIR = 'G:/Mój dysk/POSITION_TOY_9MO/SCRIPTS/clean_code/data/'
 OUT_DIR = 'G:/Mój dysk/POSITION_TOY_9MO/SCRIPTS/clean_code/plots/'
 
@@ -38,11 +38,11 @@ make_boxplots_interaction(df_sit_mdn, df_non_mdn,
                           colors={"graspable": "#2bc3db",
                          "stationary": "#bfd739"},
                           toy_images={'graspable':
-                            {'dino_img': plt.imread(DIR + timepoint + '/images/dino.png'),
-                            'bubbles_img': plt.imread(DIR + timepoint + '/images/bubbles.png')},
+                            {'dino_img': plt.imread(DIR + timepoint + '/images/trademark/dino.png'),
+                            'bubbles_img': plt.imread(DIR + timepoint + '/images/trademark/bubbles.png')},
                           'stationary':
-                            {'klickity_img': plt.imread(DIR + timepoint + '/images/klickity.png'),
-                            'spinner_img': plt.imread(DIR + timepoint + '/images/spinner.png')}},
+                            {'klickity_img': plt.imread(DIR + timepoint + '/images/trademark/klickity.png'),
+                            'spinner_img': plt.imread(DIR + timepoint + '/images/trademark/spinner.png')}},
                           fig_size=(10, 10),
                           save_name=f"{OUT_DIR}/{timepoint}/boxplots_interaction_mdn.png",
                           )
@@ -53,11 +53,11 @@ make_boxplots_interaction_count(sampling_per_id_sit, sampling_per_id_non,
                           colors={"graspable": "#2bc3db",
                          "stationary": "#bfd739"},
                           toy_images={'graspable':
-                            {'dino_img': plt.imread(DIR + timepoint + '/images/dino.png'),
-                            'bubbles_img': plt.imread(DIR + timepoint + '/images/bubbles.png')},
+                            {'dino_img': plt.imread(DIR + timepoint + '/images/trademark/dino.png'),
+                            'bubbles_img': plt.imread(DIR + timepoint + '/images/trademark/bubbles.png')},
                           'stationary':
-                            {'klickity_img': plt.imread(DIR + timepoint + '/images/klickity.png'),
-                            'spinner_img': plt.imread(DIR + timepoint + '/images/spinner.png')}},
+                            {'klickity_img': plt.imread(DIR + timepoint + '/images/trademark/klickity.png'),
+                            'spinner_img': plt.imread(DIR + timepoint + '/images/trademark/spinner.png')}},
                           fig_size=(10, 10),
                           save_name=f"{OUT_DIR}{timepoint}/vboxplots_count_interaction.png",
                           )
