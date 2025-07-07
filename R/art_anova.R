@@ -1,14 +1,8 @@
 library(ARTool)      
 library(emmeans)     
-library(ggplot2)     
 library(dplyr)       
 library(car)         
-library(lme4)
-library(onewaytests)
 library(moments)
-library(tidyverse)
-library(nparLD)
-library(writexl)
 
 data <- read_csv(DATA)
 
