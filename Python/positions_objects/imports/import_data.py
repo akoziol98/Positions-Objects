@@ -239,7 +239,7 @@ def extract_sampling_across_positions(DIR, body_or=None, manual_or=None):
 
     return sampling_across_positions
 
-def extract_sampling_per_id(DIR, sampling_across_positions, aff_label, con_position):
+def extract_sampling_per_id(DIR, sampling_across_positions, aff_label='Object', con_position='Position'):
     length = pd.read_excel(DIR + '/length_T3.xlsx')[['id', 'video_length']]
 
     all_combinations = pd.MultiIndex.from_product(

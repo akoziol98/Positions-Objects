@@ -3,7 +3,7 @@ import seaborn as sns
 from matplotlib.patches import ConnectionPatch
 plt.rcParams.update({'font.size': 18})
 
-def make_boxplots_interaction(df_sit, df_non, y_var, toys, colors, toy_images, fig_size, save_name=0):
+def make_boxplots_interaction(df_sit, df_non, y_var, toys, colors, toy_images, fig_size):
     outliers_th = 20
     print(f"Removed points greater than {outliers_th}."
           f"\nSitting: c={len(df_sit[df_sit[y_var] >= outliers_th])}, {(len(df_sit[df_sit[y_var] >= outliers_th]) * 100) / len(df_sit):.2f}%,"
@@ -17,7 +17,7 @@ def make_boxplots_interaction(df_sit, df_non, y_var, toys, colors, toy_images, f
     # SITTING
     ax1.set_title('Independent sitting')
     sns.boxplot(
-        data=df_sit_plot, x='Affordances', y=y_var, hue='Affordances',
+        data=df_sit_plot, x='Object', y=y_var, hue='Object',
         fliersize=0,
         boxprops=dict(alpha=.5),
         linewidth=1,
@@ -31,7 +31,7 @@ def make_boxplots_interaction(df_sit, df_non, y_var, toys, colors, toy_images, f
     )
 
     sns.swarmplot(
-        data=df_sit_plot, x='Affordances', y=y_var, hue='Affordances',
+        data=df_sit_plot, x='Object', y=y_var, hue='Object',
         size=6,
         palette=colors,
         hue_order=toys,
@@ -43,14 +43,14 @@ def make_boxplots_interaction(df_sit, df_non, y_var, toys, colors, toy_images, f
 
     for label in toys:
         x_pos = toys.index(label)
-        counts = df_sit['Affordances'].value_counts()[label]
+        counts = df_sit['Object'].value_counts()[label]
         ax1.text(x_pos, df_sit[y_var].min() - 1.8, f'c = {counts}', ha='center', va='bottom')
 
     # NOT SITTING
     ax2.set_title('Other')
 
     sns.boxplot(
-        data=df_non_plot, x='Affordances', y=y_var,
+        data=df_non_plot, x='Object', y=y_var,
         fliersize=0,
         boxprops=dict(alpha=.5),
         linewidth=1,
@@ -63,7 +63,7 @@ def make_boxplots_interaction(df_sit, df_non, y_var, toys, colors, toy_images, f
     )
 
     sns.swarmplot(
-        data=df_non_plot, x='Affordances', y=y_var, hue='Affordances',
+        data=df_non_plot, x='Object', y=y_var, hue='Object',
         size=6,
         palette=colors,
         hue_order=toys,
@@ -75,7 +75,7 @@ def make_boxplots_interaction(df_sit, df_non, y_var, toys, colors, toy_images, f
 
     for label in toys:
         x_pos = toys.index(label)
-        counts = df_non['Affordances'].value_counts()[label]
+        counts = df_non['Object'].value_counts()[label]
         ax2.text(x_pos, df_non[y_var].min() - 1.8, f'c = {counts}', ha='center', va='bottom')
 
         # Add image icons below x-axis
@@ -95,10 +95,8 @@ def make_boxplots_interaction(df_sit, df_non, y_var, toys, colors, toy_images, f
 
     # Add significance lines
     for xyA, xyB in [
-                     #[(0, 20.5), (1, 20.5)],
                      [(0, 19), (0, 19)],
                      [(1, 16), (1, 16)],
-                     #[(1, 14.5), (0, 14.5)],
                      ]:
         con = ConnectionPatch(xyA=xyA, coordsA=ax1.transData,
                               xyB=xyB, coordsB=ax2.transData,
@@ -126,8 +124,6 @@ def make_boxplots_interaction(df_sit, df_non, y_var, toys, colors, toy_images, f
     ax2.axvline(x=0, ymin=0.92, ymax=0.95, color='black', linewidth=1)
 
     ax1.text(1, 19, '***', ha='center', va='bottom')
-    # plt.annotate("***", [0.5, 20.5], ha='center', va='bottom')
-    # plt.annotate("***", [0.5, 14.5], ha='center', va='bottom')
 
     for ax in [ax1, ax2]:
         ax.set_facecolor("white")
@@ -145,14 +141,9 @@ def make_boxplots_interaction(df_sit, df_non, y_var, toys, colors, toy_images, f
     plt.xlabel('')
     plt.subplots_adjust(wspace=0.05)
 
-
-    if save_name:
-        plt.savefig(f"{save_name}", dpi=900)
-        print("Plot saved successfully")
-
     plt.show()
 
-def make_boxplots_interaction_count(df_sit, df_non, y_var, toys, colors, toy_images, fig_size, save_name=0):
+def make_boxplots_interaction_count(df_sit, df_non, y_var, toys, colors, toy_images, fig_size):
     df_sit_plot = df_sit.copy()
     df_non_plot = df_non.copy()
 
@@ -162,7 +153,7 @@ def make_boxplots_interaction_count(df_sit, df_non, y_var, toys, colors, toy_ima
     ax1.set_title('Independent sitting')
 
     sns.boxplot(
-        data=df_sit_plot, x='Affordances', y=y_var, hue='Affordances',
+        data=df_sit_plot, x='Object', y=y_var, hue='Object',
         fliersize=0,
         boxprops=dict(alpha=.5),
         linewidth=1,
@@ -176,7 +167,7 @@ def make_boxplots_interaction_count(df_sit, df_non, y_var, toys, colors, toy_ima
     )
 
     sns.swarmplot(
-        data=df_sit_plot, x='Affordances', y=y_var, hue='Affordances',
+        data=df_sit_plot, x='Object', y=y_var, hue='Object',
         size=6,
         palette=colors,
         hue_order=toys,
@@ -187,14 +178,14 @@ def make_boxplots_interaction_count(df_sit, df_non, y_var, toys, colors, toy_ima
     )
     for label in toys:
         x_pos = toys.index(label)
-        counts = df_sit['Affordances'].value_counts()[label]
+        counts = df_sit['Object'].value_counts()[label]
         ax1.text(x_pos, df_sit[y_var].min() - 1.5, f'n = {counts}', ha='center', va='bottom')
 
     # NOT SITTING
     ax2.set_title('Other')
 
     sns.boxplot(
-        data=df_non_plot, x='Affordances', y=y_var,
+        data=df_non_plot, x='Object', y=y_var,
         fliersize=0,
         boxprops=dict(alpha=.5),
         linewidth=1,
@@ -207,7 +198,7 @@ def make_boxplots_interaction_count(df_sit, df_non, y_var, toys, colors, toy_ima
     )
 
     sns.swarmplot(
-        data=df_non_plot, x='Affordances', y=y_var, hue='Affordances',
+        data=df_non_plot, x='Object', y=y_var, hue='Object',
         size=6,
         palette=colors,
         hue_order=toys,
@@ -218,7 +209,7 @@ def make_boxplots_interaction_count(df_sit, df_non, y_var, toys, colors, toy_ima
     )
     for label in toys:
         x_pos = toys.index(label)
-        counts = df_non['Affordances'].value_counts()[label]
+        counts = df_non['Object'].value_counts()[label]
         ax2.text(x_pos, df_non[y_var].min() - 1.5, f'n = {counts}', ha='center', va='bottom')
 
     #Add image icons below x-axis
@@ -280,10 +271,6 @@ def make_boxplots_interaction_count(df_sit, df_non, y_var, toys, colors, toy_ima
     line = plt.Line2D((0,0), (0,0), color="w", linewidth=3)
     fig.add_artist(line)
     plt.subplots_adjust(wspace=0.05)
-
-    if save_name:
-        plt.savefig(f"{save_name}", dpi=900)
-        print("Plot saved successfully")
 
     plt.show()
     plt.close()

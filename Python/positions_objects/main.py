@@ -8,7 +8,7 @@ OUT_DIR = ''
 body = generateBodyDescriptives(DIR)
 manual = generateManualDescriptives(DIR)
 sampling_across_positions = extract_sampling_across_positions(DIR, body, manual)
-sampling_per_id = extract_sampling_per_id(DIR, aff_Object='Object', con_position='Position')
+sampling_per_id = extract_sampling_per_id(DIR)
 
 sampling_per_id = sampling_per_id[sampling_per_id['count'] > 0].reset_index(drop=True)
 
@@ -39,7 +39,7 @@ make_boxplots_interaction_count(sampling_per_id_sit, sampling_per_id_non,
                           y_var='count_per_min',
                           toys=['graspable', 'stationary'],
                           colors={"graspable": "#2bc3db",
-                         "stationary": "#bfd739"},
+                                  "stationary": "#bfd739"},
                           toy_images={'graspable':
                                             {'dino_img': 'PATH',
                                              'bubbles_img': 'PATH'},
