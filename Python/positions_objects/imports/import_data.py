@@ -43,7 +43,7 @@ def assign_task_bin(row, times, bins, ini_threshold=0):
         return '5+'
 
     return 'Undefined'  # If no bin matches
-def generateBodyDescriptives(DIR, timepoint):
+def generateBodyDescriptives(DIR):
     """
        Extracts and processes body movement annotation data from ELAN (.eaf) files,
        compiling them into a structured dataset.
@@ -56,7 +56,7 @@ def generateBodyDescriptives(DIR, timepoint):
                      sorted by ID and start time, and saved as a CSV file.
     """
     data_pos = {}
-    for file in glob.glob(DIR + timepoint + '/body/*/*.eaf'):
+    for file in glob.glob(DIR+'/*.eaf'):
         elan_file = pympi.Elan.Eaf(file)
         filename = os.path.basename(file)[:7]
         df_pos = pd.DataFrame(columns=['StartTime', 'EndTime', 'Duration', 'Tier'])
@@ -74,10 +74,10 @@ def generateBodyDescriptives(DIR, timepoint):
 
     body = pd.concat(data_pos.values(), ignore_index=True)
     body = body.sort_values(['id', 'StartTime']).reset_index(drop=True)
-    body.to_csv(DIR + timepoint + '/body.csv')
+
     return body
 
-def generateManualDescriptives(DIR, timepoint):
+def generateManualDescriptives(DIR):
     """
         Extracts and processes manual annotation data from ELAN (.eaf) files,
         focusing on specific tiers related to object handling.
@@ -91,29 +91,28 @@ def generateManualDescriptives(DIR, timepoint):
     """
     data_manual = {}
     tiers_analysis = ['inhand_right_child', 'inhand_left_child']
-    for file in glob.glob(DIR + timepoint + '/manual/*/*.eaf'):
+    for file in glob.glob(DIR+'/*.eaf'):
 
         elan_file = pympi.Elan.Eaf(file)
         filename = os.path.basename(file)[:7]
-        df_man = pd.DataFrame(columns=['StartTime', 'EndTime', 'Duration', 'Tier', 'Label'])
+        df_man = pd.DataFrame(columns=['StartTime', 'EndTime', 'Duration', 'Tier', 'Object'])
         for tier in elan_file.get_tier_names():
             if tier in tiers_analysis:
                 for ann in elan_file.get_annotation_data_for_tier(tier):
                     if ann[2] != "":
                         df2 = pd.DataFrame({'id': filename, 'TimePoint': filename[-1], 'StartTime': ann[0], 'EndTime': ann[1],
-                                            'Duration': ann[1] - ann[0], 'Tier': tier, 'Label': ann[2]}, index=[0])
+                                            'Duration': ann[1] - ann[0], 'Tier': tier, 'Object': ann[2]}, index=[0])
                         df_man = pd.concat([df_man, df2], ignore_index=True)
 
                 data_manual[filename] = df_man.sort_values('StartTime').reset_index(drop=True)
     manual = pd.concat(data_manual.values(), ignore_index=True)
 
     manual = manual.sort_values(['id', 'StartTime'])
-    manual.to_csv(DIR + timepoint + '/manual.csv')
     return manual
 
 def check_sitting(row, participant_data_bod):
     new_row = pd.Series(dtype=float)
-    new_row['Label'] = row['Label']
+    new_row['Object'] = row['Object']
     new_row['Tier'] = row['Tier']
     new_row['id'] = row['id']
     new_row['StartTime'] = np.nan
@@ -146,8 +145,8 @@ def calculate_sampling_across_positions(manual,
                                         toys):
 
     sampling_across_positions = pd.DataFrame(
-        columns=['StartTime', 'EndTime', 'Duration', 'Tier', 'Label', 'Position', 'id'])
-    manual['Label'] = manual['Label'].apply(lambda x: x if x in toys else np.nan)
+        columns=['StartTime', 'EndTime', 'Duration', 'Tier', 'Object', 'Position', 'id'])
+    manual['Object'] = manual['Object'].apply(lambda x: x if x in toys else np.nan)
     limbs_dict = {}
 
     for limb, label in zip(['inhand_left_child', 'inhand_right_child'],
@@ -202,11 +201,11 @@ def calculate_sampling_across_positions(manual,
 
     return sampling_across_positions.reset_index(drop=True)
 
-def extract_sampling_across_positions(DIR, timepoint, body_or=None, manual_or=None):
+def extract_sampling_across_positions(DIR, body_or=None, manual_or=None):
     if manual_or is None:
-        manual_or = pd.read_csv(DIR + timepoint + '/manual.csv', index_col=0)
+        manual_or = pd.read_csv(DIR + '/manual.csv', index_col=0)
     if body_or is None:
-        body_or = pd.read_csv(DIR + timepoint + '/body.csv', index_col=0)
+        body_or = pd.read_csv(DIR + '/body.csv', index_col=0)
 
     manual = manual_or.copy()
     body = body_or.copy()
@@ -223,36 +222,34 @@ def extract_sampling_across_positions(DIR, timepoint, body_or=None, manual_or=No
 
 
     sitting = sampling_across_positions[sampling_across_positions['Position'] == 'Sitting']
-    sitting['Condition'] = ['Independent sitting'] * len(sitting)
+    sitting['Position'] = ['Independent sitting'] * len(sitting)
     id_sitters = sitting['id'].to_numpy()
 
     sampling_across_positions['sitter_yes_no'] = sampling_across_positions['id'].isin(id_sitters)
     sampling_across_positions['Duration'] = sampling_across_positions['Duration'] / 1000
-    sampling_across_positions = sampling_across_positions[['Duration', 'Tier', 'Label', 'Position', 'id']]
+    sampling_across_positions = sampling_across_positions[['StartTime', 'EndTime', 'Duration', 'Tier', 'Object', 'Position', 'id']]
 
     map_toys = {'bubbles': 'graspable',
                 'dino': 'graspable',
                 'klickity': 'stationary',
                 'spinner': 'stationary'}
 
-    sampling_across_positions['Affordances'] = sampling_across_positions['Label'].replace(map_toys)
-    sampling_across_positions['Condition'] = sampling_across_positions['Position'].apply(lambda x: 'Independent sitting' if x=='Sitting' else 'Other')
-    sampling_across_positions.to_csv(DIR + timepoint + '/sampling_across_positions.csv')
+    sampling_across_positions['Object'] = sampling_across_positions['Object'].replace(map_toys)
+    sampling_across_positions['Position'] = sampling_across_positions['Position'].apply(lambda x: 'Independent sitting' if x=='Sitting' else 'Other')
 
-    print(f'File saved successfully inside {DIR}/data/{timepoint}/')
     return sampling_across_positions
 
-def extract_sampling_per_id(DIR, sampling_across_positions, timepoint):
-    length = pd.read_excel(DIR + timepoint + '/length_T3.xlsx')[['id', 'video_length']]
+def extract_sampling_per_id(DIR, sampling_across_positions, aff_label, con_position):
+    length = pd.read_excel(DIR + '/length_T3.xlsx')[['id', 'video_length']]
 
     all_combinations = pd.MultiIndex.from_product(
         [sampling_across_positions['id'].unique(),
-         sampling_across_positions['Affordances'].unique(),
-         sampling_across_positions['Condition'].unique()],
-        names=['id', 'Affordances', 'Condition']
+         sampling_across_positions[aff_label].unique(),
+         sampling_across_positions[con_position].unique()],
+        names=['id', aff_label, con_position]
     )
-    # Group by id, Label, and Position to calculate count and median
-    grouped = sampling_across_positions.groupby(['id', 'Affordances', 'Condition'])['Duration'].agg(['count', 'sum'])
+
+    grouped = sampling_across_positions.groupby(['id', aff_label, con_position])['Duration'].agg(['count', 'sum'])
     grouped = grouped.reindex(all_combinations).reset_index()
     grouped['count'] = grouped['count'].fillna(0)
     grouped['sum'] = grouped['sum'].fillna(0)
@@ -260,9 +257,5 @@ def extract_sampling_per_id(DIR, sampling_across_positions, timepoint):
 
     grouped = grouped.merge(length, on='id', how='left')
     grouped['count_per_min'] = grouped['count'] / (grouped['video_length'] / 60000)
-    grouped['time_s_per_min'] = (grouped['sum']) / (grouped['video_length'] / 60000).fillna(0) # time in seconds spent sampling in the specific position per minute
-    grouped.to_csv(DIR + timepoint + '/sampling_across_positions_counts.csv')
-    grouped[grouped['count'] > 0].to_csv(DIR + timepoint + '/art_anova_count.csv')
 
-    print(f'File saved successfully inside /data/{timepoint}/')
     return grouped
