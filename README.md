@@ -14,8 +14,8 @@ This repository contains Python and R code used to analyse data for the paper:
 - `main.py` 
   Runs import and data visualisation from scripts above
   
-- `R/art_anova.R`  
-  Conducts ART-ANOVA for the dependent variable (sampling duration or frequency) and the interaction between body position and type of object
+- `R/glmm.R`  
+  Conducts GLMM for the dependent variable (sampling duration or frequency) and the interaction between body position and type of object
   
 ## Purpose
 
