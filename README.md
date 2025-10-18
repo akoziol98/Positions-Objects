@@ -5,13 +5,13 @@ This repository contains Python and R code used to analyse data for the paper:
 
 ## Files Overview
 
-- `import_data.py`  
+- `Python/import_data.py`  
   Processes raw coding data from EAF files and prepares datasets for further analysis.
 
-- `plot_data.py`  
+- `Python/plot_data.py`  
   Contains functions for creating boxplots to visualise the duration and frequency of manual sampling interactions across different postures and object types. Generates figures used in the paper.
   
-- `main.py` 
+- `Python/main.py` 
   Runs import and data visualisation from scripts above
   
 - `R/glmm.R`  
