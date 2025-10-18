@@ -2,9 +2,6 @@
 
 This repository contains Python and R code used to analyse data for the paper:  
 **"Towards understanding free-flowing manual sampling: real-time interaction between body position and object type in 9-month-olds"**  
-by Agata Kozioł, Zuzanna Laudańska, Karolina Babis, Hana D'Souza and Przemysław Tomalski (in press).
-
-If you need more information, please contact: **akoziol@sd.psych.pan.pl**
 
 ## Files Overview
 
