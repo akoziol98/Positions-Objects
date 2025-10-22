@@ -6,6 +6,8 @@ library(moments)
 library(tidyverse)
 library(partR2)
 library(see)
+library(simr)
+library(lme4)
 
 data <- read_csv(DATA)
 
@@ -30,6 +32,15 @@ Anova_results <- car::Anova(glmm_model, type = "III")
 print(Anova_results)
 performance::r2_nakagawa(glmm_model)
 
+## ---------------------------------------------------------
+## Sensitivity analysis
+## ---------------------------------------------------------
+data$logY_var <- log(data$Y_var)
+model_lmer <- lmer(logY_var ~ Position * Object + (1 | id), data = data)
+
+fixef(model_lmer)
+effect_name <- names(fixef(model_lmer))[4]
+powerCurve(model_lmer, fixed(effect_name, "t"), nsim = 1000)
 
 ## ---------------------------------------------------------
 ## Post-hoc comparisons; Cohen's d
