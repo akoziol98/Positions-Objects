@@ -4,45 +4,6 @@ import pympi
 import glob
 import os
 
-def assign_task_bin(row, times, bins, ini_threshold=0):
-    """
-    Assigns a time bin to an event based on its StartTime and EndTime.
-
-    Parameters:
-    - row (Series): A Pandas row containing 'StartTime' and 'EndTime' values.
-    - times (list): A list of time thresholds (in milliseconds) defining bin limits.
-    - bins (list): A list of labels corresponding to the time bins.
-    - ini_threshold (int, optional): If set, ignores events that start before this threshold. Default is 0.
-
-    Returns:
-    - str: The assigned bin label (e.g., '0-1', '1-2', etc.).
-    - 'Undefined': If the event extends beyond the allowed 25% threshold of a bin.
-    - '5+': If the event starts beyond 300,000 ms.
-
-    Logic:
-    - If an event fully fits within a bin, it is assigned to that bin.
-    - If an event crosses a bin boundary but extends no more than 25% beyond it, it remains in the original bin.
-    - If an event extends beyond 25% of a bin, it is marked as 'Undefined'.
-    - If an event starts at or beyond 300,000 ms, it is assigned to '5+'.
-
-    """
-    for bin, thr in zip(times, bins):
-        if ini_threshold and row['StartTime'] < ini_threshold:
-            continue  # Ignore events before the initial threshold
-
-        if row['StartTime'] <= bin and row['EndTime'] <= bin:
-            return thr  # Event fully within the bin
-
-        if row['StartTime'] <= bin and row['EndTime'] > bin:
-            if row['EndTime'] <= bin + 0.25 * bin:
-                return thr  # Event extends within allowed range
-            else:
-                return 'Undefined'  # Event extends too far
-
-    if row['StartTime'] >= 300000:
-        return '5+'
-
-    return 'Undefined'  # If no bin matches
 def generateBodyDescriptives(DIR):
     """
        Extracts and processes body movement annotation data from ELAN (.eaf) files,
