@@ -1,6 +1,7 @@
 from plotting.plot_data import make_boxplots_interaction, make_boxplots_interaction_count
 from imports.import_data import extract_sampling_across_positions, extract_sampling_per_id, generateBodyDescriptives, \
     generateManualDescriptives
+import matplotlib.pyplot as plt
 
 DIR = ''
 OUT_DIR = ''
@@ -27,11 +28,11 @@ make_boxplots_interaction(df_sit_mdn, df_non_mdn,
                           colors={"graspable": "#2bc3db",
                                   "stationary": "#bfd739"},
                           toy_images={'graspable':
-                                            {'dino_img': 'PATH',
-                                            'bubbles_img': 'PATH'},
+                                            {'dino_img': plt.imread('PATH'),
+                                            'bubbles_img': plt.imread('PATH')},
                                        'stationary':
-                                            {'klickity_img': 'PATH',
-                                            'spinner_img': 'PATH'}},
+                                            {'klickity_img': plt.imread('PATH'),
+                                            'spinner_img': plt.imread('PATH')}},
                           fig_size=(10, 10),
                           )
 
@@ -40,11 +41,11 @@ make_boxplots_interaction_count(sampling_per_id_sit, sampling_per_id_non,
                           toys=['graspable', 'stationary'],
                           colors={"graspable": "#2bc3db",
                                   "stationary": "#bfd739"},
-                          toy_images={'graspable':
-                                            {'dino_img': 'PATH',
-                                             'bubbles_img': 'PATH'},
-                                        'stationary':
-                                            {'klickity_img': 'PATH',
-                                             'spinner_img': 'PATH'}},
+                                toy_images={'graspable':
+                                                {'dino_img': plt.imread('PATH'),
+                                                 'bubbles_img': plt.imread('PATH')},
+                                            'stationary':
+                                                {'klickity_img': plt.imread('PATH'),
+                                                 'spinner_img': plt.imread('PATH')}},
                           fig_size=(10, 10),
                           )
