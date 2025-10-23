@@ -100,10 +100,7 @@ def check_sitting(row, participant_data_bod):
 
     return new_row
 
-def calculate_sampling_across_positions(manual,
-                                        body,
-                                        position,
-                                        toys):
+def calculate_sampling_across_positions(manual, body, position, toys):
 
     sampling_across_positions = pd.DataFrame(
         columns=['StartTime', 'EndTime', 'Duration', 'Tier', 'Object', 'Position', 'id'])

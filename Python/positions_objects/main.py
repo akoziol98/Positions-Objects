@@ -13,7 +13,7 @@ sampling_per_id = extract_sampling_per_id(DIR)
 sampling_per_id = sampling_per_id[sampling_per_id['count'] > 0].reset_index(drop=True)
 
 df_sit = sampling_across_positions[sampling_across_positions['Position'] == 'Independent sitting']
-df_non = sampling_across_positions[sampling_across_positions['Position'] != 'Sitting']
+df_non = sampling_across_positions[sampling_across_positions['Position'] == 'Other']
 
 sampling_per_id_sit = sampling_per_id[sampling_per_id['Position'] == 'Independent sitting']
 sampling_per_id_non = sampling_per_id[sampling_per_id['Position'] == 'Other']

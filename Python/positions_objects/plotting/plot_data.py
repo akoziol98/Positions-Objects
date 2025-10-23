@@ -129,14 +129,16 @@ def make_boxplots_interaction(df_sit, df_non, y_var, toys, colors, toy_images, f
         ax.set_facecolor("white")
         ax.set_ylabel('')
         ax.set_xlabel('')
+
     plt.ylim([0, 20])
     ax1.set_yticklabels([str(int(ytick)) if ytick % 5 == 0 else ytick for ytick in ax1.get_yticks()[:]])
     ax1.set_ylabel('Duration of a manual sampling episode [s]', fontsize=22)
+
     sns.despine(trim=True)
     ax1.spines['right'].set_visible(False)
     ax2.spines['left'].set_visible(False)
     ax2.get_yaxis().set_visible(False)
-    #
+
     plt.tight_layout()
     plt.xlabel('')
     plt.subplots_adjust(wspace=0.05)
